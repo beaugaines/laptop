@@ -11,7 +11,7 @@ fancy_echo() {
   echo
 }
 
-if lsb_release -c | grep -qEv 'precise|quantal|wheezy|raring|jessie'
+if lsb_release -c | grep -qEv 'precise|quantal|saucy'
 then
   fancy_echo "Sorry! we don't currently support that distro."
   exit 1;
@@ -92,12 +92,12 @@ fancy_echo "Installing rbenv-gem-rehash so the shell automatically picks up bina
 fancy_echo "Installing ruby-build, to install Rubies ..."
   successfully git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
 
-fancy_echo "Installing Ruby 2.0.0-p247 ..."
-  successfully rbenv install 2.0.0-p247
+fancy_echo "Installing Ruby 2.1.1 ..."
+  successfully rbenv install 2.1.1
 
-fancy_echo "Setting Ruby 2.0.0-p247 as global default Ruby ..."
-  successfully rbenv global 2.0.0-p247
-  successfully rbenv shell 2.0.0-p247
+fancy_echo "Setting Ruby 2.1.1 as global default Ruby ..."
+  successfully rbenv global 2.1.1
+  successfully rbenv shell 2.1.1
 
 fancy_echo "Setting up .gemrc for no documentation"
   successfully echo 'gem:  --no-ri --no-rdoc' >> ~/.gemrc
@@ -106,7 +106,7 @@ fancy_echo "Updating to latest Rubygems version ..."
   successfully gem update --system
 
 fancy_echo "Installing critical Ruby gems for Rails development ..."
-  successfully gem install bundler pg rails unicorn --no-document
+  successfully gem install bundler rails
 
 fancy_echo "Installing GitHub CLI client ..."
   successfully curl http://hub.github.com/standalone -sLo ~/.bin/hub
