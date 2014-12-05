@@ -11,14 +11,14 @@ fancy_echo() {
   echo
 }
 
-if lsb_release -c | grep -qEv 'precise|quantal|saucy'
-then
-  fancy_echo "Sorry! we don't currently support that distro."
-  exit 1;
-fi
+# if lsb_release -c | grep -qEv 'utopic|trusty'
+# then
+#  fancy_echo "Sorry! we don't currently support that distro."
+#  exit 1;
+#fi
 
 fancy_echo 'Adding postgres repository'
-  successfully sudo echo 'deb http://apt.postgresql.org/pub/repos/apt/ precise-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
+  successfully sudo echo 'deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main' >> /etc/apt/sources.list.d/pgdg.list
   successfully wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
 
 fancy_echo "Adding node and sublime repositories"
@@ -36,7 +36,7 @@ fancy_echo "Updating system packages ..."
   successfully sudo aptitude -y dist-upgrade
 
 fancy_echo "Installing base packages ..."
-  successfully sudo aptitude install -y sqlite3 libsqlite3-dev libssl-dev openssl zlib1g zlib1g-dev zlibc git libxslt-dev libxml2-dev git g++ build-essential texinfo curl nodejs terminator leafpad gimp inkscape 
+  successfully sudo aptitude install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties texinfo tree nodejs gimp inkscape
 
 fancy_echo "Installing sublime text"
   successfully sudo aptitude install -y sublime-text
@@ -45,7 +45,7 @@ fancy_echo "Installing base ruby build dependencies ..."
   successfully sudo aptitude build-dep -y ruby1.9.3
 
 fancy_echo "Installing libraries for common gem dependencies ..."
-  successfully sudo aptitude install -y libxslt1-dev libcurl4-openssl-dev libksba8 libksba-dev libqtwebkit-dev
+  successfully sudo aptitude install -y libcurl4-openssl-dev libksba8 libksba-dev libqtwebkit-dev
 
 fancy_echo "Installing Postgres, a good open source relational database ..."
   successfully sudo aptitude install -y postgresql postgresql-server-dev-all pgadmin3
@@ -77,36 +77,33 @@ fancy_echo "Installing watch, to execute a program periodically and show the out
 
 fancy_echo "Installing rbenv, to change Ruby versions ..."
   successfully git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
+  successfully echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
+  successfully echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+  successfully git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+  successfully echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
+  successfully exec $SHELL
 
-  if ! grep -qs "rbenv init" ~/.bashrc; then
-    successfully echo 'export PATH="$HOME/bin:$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
-
-    successfully echo 'eval "$(rbenv init -)"' >> ~/.bashrc
-  fi
-
-  source ~/.bashrc
+fancy_echo "Add default gems for all rubies installed with rbenv"
+  successfully echo 'rails' >> ~/.rbenv/default-gems
+  successfully echo 'bundler' >> ~/.rbenv/default-gems
+  successfully echo 'rubygems-bundler' >> ~/.rbenv/default-gems
+  successfully echo 'pry' >> ~/.rbenv/default-gems
 
 fancy_echo "Installing rbenv-gem-rehash so the shell automatically picks up binaries after installing gems with binaries..."
   successfully git clone https://github.com/sstephenson/rbenv-gem-rehash.git ~/.rbenv/plugins/rbenv-gem-rehash
 
-fancy_echo "Installing ruby-build, to install Rubies ..."
-  successfully git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+fancy_echo "Installing Ruby 2.1.4 ..."
+  successfully rbenv install 2.1.4
 
-fancy_echo "Installing Ruby 2.1.1 ..."
-  successfully rbenv install 2.1.1
-
-fancy_echo "Setting Ruby 2.1.1 as global default Ruby ..."
-  successfully rbenv global 2.1.1
-  successfully rbenv shell 2.1.1
+fancy_echo "Setting Ruby 2.1.4 as global default Ruby ..."
+  successfully rbenv global 2.1.4
+  successfully rbenv shell 2.1.4
 
 fancy_echo "Setting up .gemrc for no documentation"
   successfully echo 'gem:  --no-ri --no-rdoc' >> ~/.gemrc
 
-fancy_echo "Updating to latest Rubygems version ..."
-  successfully gem update --system
-
-fancy_echo "Installing critical Ruby gems for Rails development ..."
-  successfully gem install bundler rails
+fancy_echo "Enable rubygems-bundler (no more bundle exec!)"
+  successfully gem regenerate_binstubs
 
 fancy_echo "Installing GitHub CLI client ..."
   successfully curl http://hub.github.com/standalone -sLo ~/.bin/hub
