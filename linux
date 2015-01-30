@@ -29,8 +29,8 @@ fancy_echo 'Adding postgres repository'
   successfully wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
 
 fancy_echo "Adding node and sublime repositories"
-  successfully sudo add-apt-repository -y ppa:chris-lea/node.js
   successfully sudo add-apt-repository -y ppa:webupd8team/sublime-text-2
+  successfully curl -sL https://deb.nodesource.com/setup | sudo bash -
 
 fancy_echo "Updating system packages ..."
   if command -v aptitude >/dev/null; then
@@ -45,7 +45,13 @@ fancy_echo "Updating system packages ..."
 fancy_echo "Installing base packages ..."
   successfully sudo aptitude install -y git-core curl zlib1g-dev build-essential libssl-dev libreadline-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt1-dev libcurl4-openssl-dev python-software-properties texinfo tree nodejs gimp inkscape
 
-fancy_echo "Installing sublime text"
+fancy_echo "Configuring node ..."
+  successfully npm config set prefix /usr/local
+
+fancy_echo "Installing some useful node libraries ..."
+  successfully npm install -g express grunt-cli yo gulp bower
+
+fancy_echo "Installing sublime text ..."
   successfully sudo aptitude install -y sublime-text
 
 fancy_echo "Installing base ruby build dependencies ..."
@@ -94,12 +100,12 @@ fancy_echo "Add default gems for all rubies installed with rbenv"
   successfully echo 'rubygems-bundler' >> ~/.rbenv/default-gems
   successfully echo 'pry' >> ~/.rbenv/default-gems
 
-fancy_echo "Installing Ruby 2.1.4 ..."
-  successfully rbenv install 2.1.4
+fancy_echo "Installing Ruby 2.1.5 ..."
+  successfully rbenv install 2.1.5
 
-fancy_echo "Setting Ruby 2.1.4 as global default Ruby ..."
-  successfully rbenv global 2.1.4
-  successfully rbenv shell 2.1.4
+fancy_echo "Setting Ruby 2.1.5 as global default Ruby ..."
+  successfully rbenv global 2.1.5
+  successfully rbenv shell 2.1.5
 
 fancy_echo "Setting up .gemrc for no documentation"
   successfully echo 'gem:  --no-ri --no-rdoc' >> ~/.gemrc
