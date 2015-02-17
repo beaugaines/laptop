@@ -47,6 +47,7 @@ fancy_echo "Installing base packages ..."
 
 fancy_echo "Configuring node ..."
   successfully npm config set prefix /usr/local
+  successfully echo "export NODE_PATH=$NODE_PATH:/usr/local/lib/node_modules" >> ~/.bashrc && source ~/.bashrc
 
 fancy_echo "Installing some useful node libraries ..."
   successfully npm install -g express grunt-cli yo gulp bower
@@ -54,14 +55,8 @@ fancy_echo "Installing some useful node libraries ..."
 fancy_echo "Installing sublime text ..."
   successfully sudo aptitude install -y sublime-text
 
-fancy_echo "Installing base ruby build dependencies ..."
-  successfully sudo aptitude build-dep -y ruby1.9.3
-
-fancy_echo "Installing libraries for common gem dependencies ..."
-  successfully sudo aptitude install -y libcurl4-openssl-dev libksba8 libksba-dev libqtwebkit-dev
-
 fancy_echo "Installing Postgres, a good open source relational database ..."
-  successfully sudo aptitude install -y postgresql postgresql-server-dev-all pgadmin3
+  successfully sudo aptitude install -y postgresql postgresql-contrib pgadmin3
 
 fancy_echo "Installing The Silver Searcher (better than ack or grep) to search the contents of files ..."
   successfully git clone git://github.com/ggreer/the_silver_searcher.git /tmp/the_silver_searcher
@@ -88,10 +83,13 @@ fancy_echo "Installing ImageMagick and Graphicsmagick, to crop and resize images
 fancy_echo "Installing watch, to execute a program periodically and show the output ..."
   successfully sudo aptitude install -y watch
 
-fancy_echo "Installing rbenv, to change Ruby versions ..."
+fancy_echo "Installing rbenv and ruby-build, to change Ruby versions ..."
   successfully git clone git://github.com/sstephenson/rbenv.git ~/.rbenv
   successfully echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc
   successfully echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+  successfully exec $SHELL
+  successfully git clone git://github.com/sstephenson/ruby-build.git ~/.rbenv/plugins/ruby-build
+  successfully echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
   successfully exec $SHELL
 
 fancy_echo "Add default gems for all rubies installed with rbenv"
@@ -100,15 +98,15 @@ fancy_echo "Add default gems for all rubies installed with rbenv"
   successfully echo 'rubygems-bundler' >> ~/.rbenv/default-gems
   successfully echo 'pry' >> ~/.rbenv/default-gems
 
+fancy_echo "Setting up .gemrc for no documentation"
+  successfully echo 'gem:  --no-ri --no-rdoc' >> ~/.gemrc
+
 fancy_echo "Installing Ruby 2.1.5 ..."
   successfully rbenv install 2.1.5
 
 fancy_echo "Setting Ruby 2.1.5 as global default Ruby ..."
   successfully rbenv global 2.1.5
   successfully rbenv shell 2.1.5
-
-fancy_echo "Setting up .gemrc for no documentation"
-  successfully echo 'gem:  --no-ri --no-rdoc' >> ~/.gemrc
 
 fancy_echo "Enable rubygems-bundler (no more bundle exec!)"
   successfully gem regenerate_binstubs
